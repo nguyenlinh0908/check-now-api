@@ -1,11 +1,18 @@
 import { JwtAuthGuard } from './../guards/jwt-auth.guard';
 import { CreateUserDto } from './../../user/dto';
-import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from 'src/modules/user/services';
+import { ApiOkResponse } from '@nestjs/swagger';
 import { CreateUserValidator } from '../validators';
 import { AuthService } from '../services';
 import { GenAccessTokenDto, UserLoginDto, UserLogoutDto } from '../dto';
-import { responseFormat } from 'src/modules/helpers';
 import { CurrentUser } from '../decorators';
 import { ICurrentUser } from '../interfaces';
 
@@ -18,30 +25,23 @@ export class AuthController {
 
   @Post('register')
   async register(@Body(CreateUserValidator) body: CreateUserDto) {
-    const data = await this.userService.create(body);
-    return responseFormat(HttpStatus.CREATED, 'user created', data);
+    return await this.userService.create(body);
   }
 
+  @ApiOkResponse({ description: 'Login successfully.' })
   @Post('login')
   async login(@Body() body: UserLoginDto) {
-    const data = await this.authService.login(body);
-    return responseFormat(HttpStatus.OK, 'login success', data);
+    return await this.authService.login(body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   async logout(@CurrentUser() user: ICurrentUser, @Body() body: UserLogoutDto) {
-    const logoutStatus = await this.authService.logout(user, body);
-    if (!logoutStatus)
-      return responseFormat(HttpStatus.BAD_REQUEST, 'logout fail');
-    return responseFormat(HttpStatus.OK, 'logout success');
+    return await this.authService.logout(user, body);
   }
 
   @Post('gen/access')
   async getAccessToken(@Body() genAccessTokenDto: GenAccessTokenDto) {
-    const accessToken = await this.authService.createAccessToken(
-      genAccessTokenDto,
-    );
-    return responseFormat(HttpStatus.OK, 'new access token', accessToken);
+    return await this.authService.createAccessToken(genAccessTokenDto);
   }
 }

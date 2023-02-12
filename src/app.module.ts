@@ -1,12 +1,14 @@
 import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { RewriteApiEndpointMiddleware } from './app.middleware';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { Token } from './modules/auth/models';
+import { HttpExceptionFilter, TransformInterceptor } from './modules/helpers';
 import { User } from './modules/user/models';
 import { UserModule } from './modules/user/user.module';
 
@@ -51,10 +53,22 @@ import { UserModule } from './modules/user/user.module';
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService, RewriteApiEndpointMiddleware],
+  providers: [
+    AppService,
+    RewriteApiEndpointMiddleware,
+
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer.apply(RewriteApiEndpointMiddleware).forRoutes('/api'); // <--- not the .forRoutes('*')
-  // }
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RewriteApiEndpointMiddleware).forRoutes('/api/v1'); // <--- not the .forRoutes('*')
+  }
 }
