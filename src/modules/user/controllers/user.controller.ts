@@ -17,4 +17,12 @@ export class UserController {
   async allUsers() {
     return await this.userService.findAll();
   }
+
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('users')
+  @ApiOkResponse({ description: 'users' })
+  async users() {
+    return await this.userService.find({ limit: 10, page: 1 });
+  }
 }

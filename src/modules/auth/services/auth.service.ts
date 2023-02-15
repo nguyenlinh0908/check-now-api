@@ -1,5 +1,5 @@
 import { UserLogoutDto } from './../dto/user-logout.dto';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
@@ -140,7 +140,11 @@ export class AuthService {
       where: { token: genAccessTokenDto.refreshToken },
     });
 
-    if (!token) return false;
+    if (!token)
+      throw new ConflictException({
+        errorCode: 'BAD_INPUT',
+        message: 'Refresh Token Not Existed',
+      });
 
     const { id } = this.jwtService.verify(genAccessTokenDto.refreshToken);
 

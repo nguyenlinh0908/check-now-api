@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserLoginDto } from 'src/modules/auth/dto';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dto';
 import { User } from '../models';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class UserService {
@@ -33,5 +37,9 @@ export class UserService {
       where: filter,
     });
     return isExist;
+  }
+
+  async find(options: IPaginationOptions): Promise<Pagination<User>> {
+    return paginate<User>(this.userRepository, options);
   }
 }

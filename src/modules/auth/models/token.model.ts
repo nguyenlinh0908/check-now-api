@@ -1,6 +1,6 @@
 import { Role } from 'src/modules/auth/enums';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { dateToTimestamp, timeStampToDate } from './../../helpers';
+import { dateToTimestamp, timeStampToDate } from '../../../helpers';
 
 @Entity()
 export class Token {

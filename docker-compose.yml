@@ -27,6 +27,7 @@ services:
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: root
+      UPLOAD_LIMIT: 300M
     networks:
       - custom
 

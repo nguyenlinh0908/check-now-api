@@ -8,7 +8,7 @@ import { RewriteApiEndpointMiddleware } from './app.middleware';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { Token } from './modules/auth/models';
-import { HttpExceptionFilter, TransformInterceptor } from './modules/helpers';
+import { HttpExceptionFilter, TransformInterceptor } from './helpers';
 import { User } from './modules/user/models';
 import { UserModule } from './modules/user/user.module';
 
