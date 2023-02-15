@@ -11,6 +11,7 @@ import { Token } from './modules/auth/models';
 import { HttpExceptionFilter, TransformInterceptor } from './helpers';
 import { User } from './modules/user/models';
 import { UserModule } from './modules/user/user.module';
+import { RoomModule } from './modules/room/room.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { UserModule } from './modules/user/user.module';
 
     AuthModule,
     UserModule,
+    RoomModule,
   ],
   controllers: [AppController],
   providers: [
