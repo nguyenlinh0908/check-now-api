@@ -1,13 +1,6 @@
 import { JwtAuthGuard } from './../guards/jwt-auth.guard';
 import { CreateUserDto } from './../../user/dto';
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { UserService } from 'src/modules/user/services';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { CreateUserValidator } from '../validators';

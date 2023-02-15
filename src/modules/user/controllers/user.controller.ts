@@ -1,5 +1,6 @@
-import { ApiOkResponse } from '@nestjs/swagger';
-import { Controller, Get, HttpStatus, UseGuards } from '@nestjs/common';
+import { FilterUserDto } from './../dto/filter-user.dto';
+import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
+import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common';
 import { CurrentUser, Roles } from 'src/modules/auth/decorators';
 import { Role } from 'src/modules/auth/enums';
 import { JwtAuthGuard, RolesGuard } from 'src/modules/auth/guards';
@@ -13,6 +14,7 @@ export class UserController {
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('all')
+  @ApiBearerAuth()
   @ApiOkResponse({ description: 'all users' })
   async allUsers() {
     return await this.userService.findAll();
@@ -21,8 +23,9 @@ export class UserController {
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('users')
+  @ApiBearerAuth()
   @ApiOkResponse({ description: 'users' })
-  async users() {
-    return await this.userService.find({ limit: 10, page: 1 });
+  async users(@Param() filterUser: FilterUserDto) {
+    return await this.userService.find(filterUser);
   }
 }

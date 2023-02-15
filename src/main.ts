@@ -13,6 +13,7 @@ async function bootstrap() {
     .setDescription('The Check Now API description')
     .setVersion('1.0')
     .addTag('check_now')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
