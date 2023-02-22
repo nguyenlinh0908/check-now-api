@@ -20,9 +20,9 @@ export class AuthService {
     private configService: ConfigService,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly redisService: RedisService,
-  ) {
-    this.redis = this.redisService.getClient();
+  ) // private readonly redisService: RedisService,
+  {
+    // this.redis = this.redisService.getClient();
   }
 
   async login(userLoginDto: UserLoginDto) {
@@ -72,7 +72,7 @@ export class AuthService {
 
     await this.tokenRepository.delete({ token: userLogoutDto.refreshToken });
     if (userLogoutDto.accessToken) {
-      this.refuseAccessToken(userLogoutDto.accessToken);
+      // this.refuseAccessToken(userLogoutDto.accessToken);
     }
 
     return true;

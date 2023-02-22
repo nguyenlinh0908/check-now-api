@@ -1,10 +1,9 @@
 import { FilterUserDto } from './../dto/filter-user.dto';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common';
-import { CurrentUser, Roles } from 'src/modules/auth/decorators';
+import { Roles } from 'src/modules/auth/decorators';
 import { Role } from 'src/modules/auth/enums';
 import { JwtAuthGuard, RolesGuard } from 'src/modules/auth/guards';
-import { ICurrentUser } from 'src/modules/auth/interfaces';
 import { UserService } from '../services';
 
 @Controller('user')

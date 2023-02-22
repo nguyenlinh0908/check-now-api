@@ -40,6 +40,6 @@ export class UserService {
   }
 
   async find(options: IPaginationOptions): Promise<Pagination<User>> {
-    return paginate<User>(this.userRepository, options);
+    return await paginate<User>(this.userRepository, options);
   }
 }

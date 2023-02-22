@@ -12,6 +12,8 @@ import { HttpExceptionFilter, TransformInterceptor } from './helpers';
 import { User } from './modules/user/models';
 import { UserModule } from './modules/user/user.module';
 import { LocationModule } from './modules/location/location.module';
+import { RoomModule } from './modules/room/room.module';
+import { Room } from './modules/room/models';
 
 @Module({
   imports: [
@@ -29,30 +31,31 @@ import { LocationModule } from './modules/location/location.module';
         username: configService.get<string>('MYSQL_USERNAME'),
         password: configService.get<string>('MYSQL_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User, Token],
+        entities: [User, Token, Room],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
 
-    RedisModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (
-        configService: ConfigService,
-      ): Promise<RedisModuleOptions> => {
-        return {
-          config: {
-            host: configService.get('REDIS_HOST'),
-            port: configService.get('REDIS_PORT'),
-          },
-        };
-      },
-    }),
+    // RedisModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: async (
+    //     configService: ConfigService,
+    //   ): Promise<RedisModuleOptions> => {
+    //     return {
+    //       config: {
+    //         host: configService.get('REDIS_HOST'),
+    //         port: configService.get('REDIS_PORT'),
+    //       },
+    //     };
+    //   },
+    // }),
 
     AuthModule,
     UserModule,
     LocationModule,
+    RoomModule,
   ],
   controllers: [AppController],
   providers: [
