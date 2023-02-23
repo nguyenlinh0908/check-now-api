@@ -8,6 +8,7 @@ import {
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
+import { FilterUserDto } from '../dto/filter-user.dto';
 
 @Injectable()
 export class UserService {
@@ -39,7 +40,18 @@ export class UserService {
     return isExist;
   }
 
-  async find(options: IPaginationOptions): Promise<Pagination<User>> {
-    return await paginate<User>(this.userRepository, options);
+  async find(
+    options: IPaginationOptions,
+    filter: FilterUserDto,
+    orderBy: any,
+  ): Promise<Pagination<User>> {
+    return await paginate<User>(this.userRepository, options, {
+      where: {
+        ...filter,
+      },
+      order: {
+        ...orderBy,
+      },
+    });
   }
 }

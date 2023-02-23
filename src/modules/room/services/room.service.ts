@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { paginate, Pagination } from 'nestjs-typeorm-paginate';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
 import { CreateRoomDto, FilterRoomDto } from '../dto';
 import { Room } from '../models';
@@ -15,7 +19,18 @@ export class RoomService {
     return await this.roomRepository.insert(createRoomDto);
   }
 
-  async find(filter: FilterRoomDto): Promise<Pagination<Room>> {
-    return await paginate<Room>(this.roomRepository, filter);
+  async find(
+    options: IPaginationOptions,
+    filter: any,
+    orderBy: any,
+  ): Promise<Pagination<Room>> {
+    return await paginate<Room>(this.roomRepository, options, {
+      where: {
+        ...filter,
+      },
+      order: {
+        ...orderBy,
+      },
+    });
   }
 }

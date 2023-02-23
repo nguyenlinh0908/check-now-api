@@ -1,5 +1,5 @@
-import { FilterRoomDto } from './../dto/filter-room.dto';
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { FilterRoomDto } from './../dto';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -11,6 +11,7 @@ import { JwtAuthGuard, RolesGuard } from 'src/modules/auth/guards';
 import { ICurrentUser } from 'src/modules/auth/interfaces';
 import { CreateRoomDto } from '../dto';
 import { RoomService } from '../services';
+import { pick } from 'lodash';
 
 @Controller('room')
 export class RoomController {
@@ -31,16 +32,12 @@ export class RoomController {
     return await this.roomService.create(body);
   }
 
-  @Roles(Role.ADMIN, Role.HOST)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @ApiBearerAuth()
   @ApiOkResponse({ description: 'rooms list' })
-  @Get()
-  async rooms(
-    @Param() filter: FilterRoomDto,
-    @CurrentUser() userInfo: ICurrentUser,
-  ) {
-    filter.user = userInfo.id;
-    return await this.roomService.find(filter);
+  @Get('list')
+  async rooms(@Query() filterRoom: FilterRoomDto) {
+    const options = pick(filterRoom, ['limit', 'page']);
+    const filter = pick(filterRoom, ['province']);
+    const order = pick(filterRoom, ['order_by']);
+    return await this.roomService.find(options, filter, order);
   }
 }

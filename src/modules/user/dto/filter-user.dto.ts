@@ -1,12 +1,13 @@
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class FilterUserDto {
-  @ApiProperty({ type: String, default: 'username', nullable: true })
+export class FilterUserDto implements IPaginationOptions {
+  @ApiProperty({ type: Number, default: 1, minimum: 1 })
+  limit: string | number;
+
+  @ApiProperty({ type: Number, default: 1, minimum: 1 })
+  page: string | number;
+
+  @ApiProperty({ type: String, default: 'username', required: false })
   username?: string;
-
-  @ApiProperty({ type: Number, default: 10 })
-  limit: number;
-
-  @ApiProperty({ type: String, default: 1 })
-  page: number;
 }

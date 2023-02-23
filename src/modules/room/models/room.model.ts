@@ -1,3 +1,4 @@
+import { dateToTimestamp, timeStampToDate } from 'src/helpers';
 import { User } from 'src/modules/user/models';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { RoomType } from '../enum';
@@ -18,13 +19,13 @@ export class Room {
   description: string;
 
   @Column()
-  province: string;
+  province: number;
 
   @Column()
-  district: string;
+  district: number;
 
   @Column()
-  ward: string;
+  ward: number;
 
   @Column({
     type: String,
@@ -56,8 +57,20 @@ export class Room {
   })
   acreage: number;
 
-  // @Column()
-  // experience: Date;
+  @Column({
+    transformer: {
+      to(value) {
+        // before insert
+        return timeStampToDate(value);
+      },
+      from(value) {
+        // after query
+        return dateToTimestamp(value);
+      },
+    },
+    default: '1970-01-01 00:00:00',
+  })
+  expired: Date;
 
   @ManyToOne(() => User, (user) => user.id)
   user: string;
