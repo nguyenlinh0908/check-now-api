@@ -14,6 +14,7 @@ import { UserModule } from './modules/user/user.module';
 import { LocationModule } from './modules/location/location.module';
 import { RoomModule } from './modules/room/room.module';
 import { Room } from './modules/room/models';
+import { FavoriteModule } from './modules/favorite/favorite.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { Room } from './modules/room/models';
     UserModule,
     LocationModule,
     RoomModule,
+    FavoriteModule,
   ],
   controllers: [AppController],
   providers: [

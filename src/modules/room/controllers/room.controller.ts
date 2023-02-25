@@ -40,4 +40,21 @@ export class RoomController {
     const order = pick(filterRoom, ['order_by']);
     return await this.roomService.find(options, filter, order);
   }
+
+  @Roles(Role.HOST)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('host/list')
+  async roomsByHost(
+    @Query() filterRoom: FilterRoomDto,
+    @CurrentUser() user: ICurrentUser,
+  ) {
+    //get rooms by host
+    filterRoom.user = user.id;
+
+    const options = pick(filterRoom, ['limit', 'page']);
+    const filter = pick(filterRoom, ['province', 'user']);
+    const order = pick(filterRoom, ['order_by']);
+
+    return await this.roomService.find(options, filter, order);
+  }
 }

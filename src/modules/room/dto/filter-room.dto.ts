@@ -5,6 +5,7 @@ import { Min } from 'class-validator';
 export class FilterRoomDto implements IPaginationOptions {
   @ApiProperty({ type: Number, default: 1, minimum: 1 })
   limit: number;
+
   @ApiProperty({ type: Number, default: 1, minimum: 1 })
   page: number;
 
