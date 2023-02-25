@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/modules/user/dto';
 import { UserService } from 'src/modules/user/services';
+import { Role } from '../enums';
 import { AuthService } from '../services';
 
 @Injectable()

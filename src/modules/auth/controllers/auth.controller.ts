@@ -1,6 +1,13 @@
 import { JwtAuthGuard } from './../guards/jwt-auth.guard';
 import { CreateUserDto } from './../../user/dto';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { UserService } from 'src/modules/user/services';
 import {
   ApiBearerAuth,
@@ -22,12 +29,22 @@ export class AuthController {
     private userService: UserService,
   ) {}
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.USER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiCreatedResponse({ description: 'created user successfully' })
   @Post('register')
-  async register(@Body(CreateUserValidator) body: CreateUserDto) {
+  async register(
+    @Body(CreateUserValidator) body: CreateUserDto,
+    @CurrentUser() user: ICurrentUser,
+  ) {
+    if (user.role == Role.USER && body.role == Role.ADMIN) {
+      throw new HttpException(
+        'You only normal user, can not create user with permission admin',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     return await this.userService.create(body);
   }
 
