@@ -13,6 +13,7 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { CreateUserValidator } from '../validators';
 import { AuthService } from '../services';
@@ -22,6 +23,7 @@ import { ICurrentUser } from '../interfaces';
 import { RolesGuard } from '../guards';
 import { Role } from '../enums';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(

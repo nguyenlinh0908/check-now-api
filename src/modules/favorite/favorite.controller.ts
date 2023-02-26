@@ -18,7 +18,9 @@ import { JwtAuthGuard, RolesGuard } from '../auth/guards';
 import { ICurrentUser } from '../auth/interfaces';
 import { FilterFavoriteDto } from './dto/filter-favorite.dto';
 import { pick } from 'lodash';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Favorite')
 @Controller('favorite')
 export class FavoriteController {
   constructor(private readonly favoriteService: FavoriteService) {}

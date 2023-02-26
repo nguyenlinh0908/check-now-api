@@ -49,3 +49,5 @@ yarn.lock
 package-lock.json
 .eslintrc.js
 .prettierrc
+
+uploads

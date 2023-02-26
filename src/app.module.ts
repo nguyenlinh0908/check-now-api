@@ -15,9 +15,34 @@ import { LocationModule } from './modules/location/location.module';
 import { RoomModule } from './modules/room/room.module';
 import { Room } from './modules/room/models';
 import { FavoriteModule } from './modules/favorite/favorite.module';
+import { MediaModule } from './modules/media/media.module';
+import { Media } from './modules/media/models/media.model';
+import {
+  ServeStaticModule,
+  ServeStaticModuleOptions,
+} from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (
+        configService: ConfigService,
+      ): Promise<ServeStaticModuleOptions[]> => {
+        return [
+          {
+            rootPath: join(
+              __dirname,
+              '..',
+              configService.get<string>('MULTER_DEST'),
+            ),
+            serveRoot: `/${configService.get<string>('MULTER_DEST')}/`,
+          },
+        ];
+      },
+      inject: [ConfigService],
+    }),
     // config module import
     ConfigModule.forRoot({
       isGlobal: true,
@@ -32,7 +57,7 @@ import { FavoriteModule } from './modules/favorite/favorite.module';
         username: configService.get<string>('MYSQL_USERNAME'),
         password: configService.get<string>('MYSQL_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User, Token, Room],
+        entities: [User, Token, Room, Media],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -58,6 +83,7 @@ import { FavoriteModule } from './modules/favorite/favorite.module';
     LocationModule,
     RoomModule,
     FavoriteModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [

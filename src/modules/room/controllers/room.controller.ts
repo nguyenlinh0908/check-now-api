@@ -4,6 +4,7 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { CurrentUser, Roles } from 'src/modules/auth/decorators';
 import { Role } from 'src/modules/auth/enums';
@@ -13,6 +14,7 @@ import { CreateRoomDto } from '../dto';
 import { RoomService } from '../services';
 import { pick } from 'lodash';
 
+@ApiTags('Room')
 @Controller('room')
 export class RoomController {
   constructor(private roomService: RoomService) {}

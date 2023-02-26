@@ -23,12 +23,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(req, payload): Promise<any> {
     const token = req.headers?.authorization?.split(' ')[1];
-    const isAccessToken = await this.authService.isAccessTokenLoggedOut(token);
-    if (isAccessToken)
-      throw new ConflictException({
-        errorCode: 'ACCESS_TOKEN_INVALID',
-        message: 'Access Token Logged Out',
-      });
+    // const isAccessToken = await this.authService.isAccessTokenLoggedOut(token);
+    // if (isAccessToken)
+    //   throw new ConflictException({
+    //     errorCode: 'ACCESS_TOKEN_INVALID',
+    //     message: 'Access Token Logged Out',
+    //   });
 
     if (!payload) {
       throw new UnauthorizedException();

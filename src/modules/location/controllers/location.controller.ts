@@ -1,7 +1,8 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiProperty, ApiQuery } from '@nestjs/swagger';
+import { ApiOkResponse, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { LocationService } from '../services';
 
+@ApiTags('Location')
 @Controller('location')
 export class LocationController {
   constructor(private locationService: LocationService) {}
