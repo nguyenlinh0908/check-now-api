@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../user/models';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
 import { Media } from './models/media.model';
@@ -12,6 +13,15 @@ export class MediaService {
   ) {}
   async create(createMediaDto: CreateMediaDto) {
     return await this.mediaRepository.insert(createMediaDto);
+  }
+
+  async createMany(createMultipleMediaDto: CreateMediaDto[]) {
+    return await this.mediaRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Media)
+      .values(createMultipleMediaDto)
+      .execute();
   }
 
   findAll() {

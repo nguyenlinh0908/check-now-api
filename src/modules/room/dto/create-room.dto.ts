@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { RoomType } from '../enum';
+import { RoomType } from '../enums';
 
 export class CreateRoomDto {
   @ApiProperty({ type: String, default: 'Phòng trọ 2n1k số 2 Đinh Liệt' })

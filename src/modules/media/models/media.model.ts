@@ -1,6 +1,7 @@
 import { Room } from 'src/modules/room/models';
 import { User } from 'src/modules/user/models';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { MediaTag } from '../enum';
 
 @Entity()
 export class Media {
@@ -16,10 +17,16 @@ export class Media {
   @Column({ type: String })
   url: string;
 
+  @Column({
+    type: 'enum',
+    enum: MediaTag,
+  })
+  tag: MediaTag;
+
   @ManyToOne(() => User, (user) => user.id)
   user: string;
 
-  @ManyToOne(() => Room)
+  @ManyToOne(() => Room, (room) => room.id)
   room: string;
 
   @ManyToOne(() => User, (user) => user.id)

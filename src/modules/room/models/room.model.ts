@@ -1,7 +1,7 @@
 import { dateToTimestamp, timeStampToDate } from 'src/helpers';
 import { User } from 'src/modules/user/models';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { RoomType } from '../enum';
+import { RoomType } from '../enums';
 
 @Entity()
 export class Room {

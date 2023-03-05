@@ -1,3 +1,4 @@
+import { CreateMediaDto } from './dto/create-media.dto';
 import { ConfigService } from '@nestjs/config';
 import {
   Controller,
@@ -15,12 +16,19 @@ import {
 import * as _ from 'lodash';
 import { MediaService } from './media.service';
 import { UpdateMediaDto } from './dto/update-media.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiProperty,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CurrentUser, Roles } from '../auth/decorators';
 import { Role } from '../auth/enums';
 import { JwtAuthGuard, RolesGuard } from '../auth/guards';
 import { ICurrentUser } from '../auth/interfaces';
+import { MediaTag } from './enum';
 
 @ApiTags('Media')
 @Controller('media')
@@ -46,8 +54,12 @@ export class MediaController {
         room: {
           type: 'string',
         },
+        tag: {
+          type: 'enum',
+          enum: [MediaTag.AVATAR, MediaTag.CONTENT],
+        },
       },
-      required: ['file'],
+      required: ['file', 'tag'],
     },
   })
   @Roles(Role.HOST, Role.ADMIN, Role.USER)
@@ -55,6 +67,8 @@ export class MediaController {
   @Post('upload/single')
   @UseInterceptors(FileInterceptor('file'))
   async uploadSingle(
+    @Body()
+    body: { user: string; room: string; tag: MediaTag },
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser() user: ICurrentUser,
   ) {
@@ -63,13 +77,65 @@ export class MediaController {
       type: file.mimetype,
       author: user.id,
       url: `${this.configService.get<string>('MULTER_DEST')}/${file.filename}`,
+      tag: body?.tag,
     });
   }
 
   @ApiBearerAuth()
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        files: {
+          type: 'string[]',
+          format: 'binary',
+        },
+        user: {
+          type: 'string',
+        },
+        room: {
+          type: 'string',
+        },
+        tag: {
+          type: 'enum',
+          enum: [MediaTag.AVATAR, MediaTag.CONTENT],
+        },
+      },
+      required: ['files', 'tag'],
+    },
+  })
   @Roles(Role.HOST, Role.ADMIN, Role.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('upload/multiple')
-  uploadMultiple(@UploadedFiles() files: Array<Express.Multer.File>) {}
+  @UseInterceptors(FilesInterceptor('files'))
+  async uploadMultiple(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body()
+    body: {
+      user: string;
+      room: string;
+      tag: MediaTag;
+    },
+    @CurrentUser() user: ICurrentUser,
+  ) {
+    let createMultipleMediaDto: CreateMediaDto[];
+    createMultipleMediaDto = _.map(files, (file) => {
+      return {
+        title: file.filename,
+        url: `${this.configService.get<string>('MULTER_DEST')}/${
+          file.filename
+        }`,
+        type: file.mimetype,
+        author: user.id,
+        user: body?.user,
+        room: body?.room,
+        tag: body?.tag,
+      };
+    });
+    return await this.mediaService.createMany(createMultipleMediaDto);
+  }
 
   @Get()
   findAll() {
