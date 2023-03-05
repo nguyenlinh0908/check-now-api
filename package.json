@@ -91,5 +91,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "volta": {
+    "node": "18.14.0",
+    "yarn": "1.22.19"
   }
 }
