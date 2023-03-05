@@ -6,4 +6,15 @@ export class CreateMediaDto {
 
   @ApiProperty({ type: String })
   url: string;
+
+  @ApiProperty({ type: String })
+  type: string;
+
+  @ApiProperty({ type: String, required: false })
+  user?: string;
+
+  @ApiProperty({ type: String, required: false })
+  room?: string;
+
+  author?: string;
 }

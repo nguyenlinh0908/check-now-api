@@ -11,20 +11,16 @@ import {
   UploadedFile,
   UploadedFiles,
   UseGuards,
-  Res,
-  StreamableFile,
 } from '@nestjs/common';
 import * as _ from 'lodash';
 import { MediaService } from './media.service';
-import { CreateMediaDto } from './dto/create-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { Roles } from '../auth/decorators';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { CurrentUser, Roles } from '../auth/decorators';
 import { Role } from '../auth/enums';
 import { JwtAuthGuard, RolesGuard } from '../auth/guards';
-import { createReadStream } from 'fs';
-import { join } from 'path';
+import { ICurrentUser } from '../auth/interfaces';
 
 @ApiTags('Media')
 @Controller('media')
@@ -34,6 +30,7 @@ export class MediaController {
     private configService: ConfigService,
   ) {}
 
+  @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -43,28 +40,36 @@ export class MediaController {
           type: 'string',
           format: 'binary',
         },
+        user: {
+          type: 'string',
+        },
+        room: {
+          type: 'string',
+        },
       },
       required: ['file'],
     },
   })
-  @Roles(Role.HOST)
+  @Roles(Role.HOST, Role.ADMIN, Role.USER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('upload/single')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadSingle(@UploadedFile() file: Express.Multer.File) {
+  async uploadSingle(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: ICurrentUser,
+  ) {
     return await this.mediaService.create({
       title: file.filename,
+      type: file.mimetype,
+      author: user.id,
       url: `${this.configService.get<string>('MULTER_DEST')}/${file.filename}`,
     });
   }
 
+  @ApiBearerAuth()
+  @Roles(Role.HOST, Role.ADMIN, Role.USER)
   @Post('upload/multiple')
   uploadMultiple(@UploadedFiles() files: Array<Express.Multer.File>) {}
-
-  @Post()
-  create(@Body() createMediaDto: CreateMediaDto) {
-    return this.mediaService.create(createMediaDto);
-  }
 
   @Get()
   findAll() {
@@ -72,7 +77,7 @@ export class MediaController {
   }
 
   @Get(':id')
-  async findOne(@Res() res: Response, @Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     const media = await this.mediaService.findOne(+id);
     return media;
   }
