@@ -1,10 +1,11 @@
 import { dateToTimestamp, timeStampToDate } from 'src/helpers';
 import { Role } from 'src/modules/auth/enums';
+import { BaseModel } from 'src/utils';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { GenderEnum } from '../enums';
 
 @Entity()
-export class User {
+export class User extends BaseModel {
   @PrimaryGeneratedColumn()
   id: number;
 

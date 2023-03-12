@@ -1,10 +1,11 @@
 import { dateToTimestamp, timeStampToDate } from 'src/helpers';
 import { User } from 'src/modules/user/models';
+import { BaseModel } from 'src/utils';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { RoomType } from '../enums';
 
 @Entity()
-export class Room {
+export class Room extends BaseModel{
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -38,9 +39,6 @@ export class Room {
   })
   type: RoomType;
 
-  @Column({ type: String, nullable: true })
-  avatar?: string;
-
   @Column({
     type: Boolean,
     nullable: true,
@@ -68,7 +66,7 @@ export class Room {
         return dateToTimestamp(value);
       },
     },
-    default: '1970-01-01 00:00:00',
+    default: '2022-08-09 00:00:00',
   })
   expired: Date;
 

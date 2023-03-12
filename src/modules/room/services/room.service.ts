@@ -29,6 +29,7 @@ export class RoomService {
         ...filter,
       },
       order: {
+        created_at: -1,
         ...orderBy,
       },
     });

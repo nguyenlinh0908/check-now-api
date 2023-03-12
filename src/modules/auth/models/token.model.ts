@@ -1,9 +1,10 @@
 import { Role } from 'src/modules/auth/enums';
+import { BaseModel } from 'src/utils';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { dateToTimestamp, timeStampToDate } from '../../../helpers';
 
 @Entity()
-export class Token {
+export class Token extends BaseModel {
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -1,10 +1,11 @@
 import { Room } from 'src/modules/room/models';
 import { User } from 'src/modules/user/models';
+import { BaseModel } from 'src/utils';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { MediaTag } from '../enum';
 
 @Entity()
-export class Media {
+export class Media extends BaseModel {
   @PrimaryGeneratedColumn()
   id: number;
 
