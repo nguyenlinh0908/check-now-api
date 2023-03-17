@@ -5,6 +5,8 @@ import {
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
+import { Media } from 'src/modules/media/models/media.model';
+import { User } from 'src/modules/user/models';
 import { Repository } from 'typeorm';
 import { CreateRoomDto, FilterRoomDto } from '../dto';
 import { Room } from '../models';
@@ -24,14 +26,28 @@ export class RoomService {
     filter: any,
     orderBy: any,
   ): Promise<Pagination<Room>> {
-    return await paginate<Room>(this.roomRepository, options, {
-      where: {
-        ...filter,
-      },
-      order: {
-        created_at: -1,
-        ...orderBy,
-      },
-    });
+    const queryBuilder = await this.roomRepository
+      .createQueryBuilder('room')
+      .leftJoinAndMapOne(
+        'room.avatar',
+        Media,
+        'media',
+        'room.id = media.roomId',
+      )
+      .where(filter);
+    return await paginate<Room>(queryBuilder, options);
+  }
+
+  async findAll() {
+    const queryBuilder = await this.roomRepository
+      .createQueryBuilder('room')
+      .innerJoinAndMapOne(
+        'room.avatar',
+        Media,
+        'media',
+        'room.id = media.roomId',
+      )
+      .getMany();
+    return queryBuilder;
   }
 }

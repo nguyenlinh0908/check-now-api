@@ -5,7 +5,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { RoomType } from '../enums';
 
 @Entity()
-export class Room extends BaseModel{
+export class Room extends BaseModel {
   @PrimaryGeneratedColumn()
   id: number;
 

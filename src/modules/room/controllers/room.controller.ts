@@ -59,4 +59,10 @@ export class RoomController {
 
     return await this.roomService.find(options, filter, order);
   }
+
+  @ApiOkResponse({ description: 'get all rooms' })
+  @Get('list/all')
+  async allRooms() {
+    return await this.roomService.findAll();
+  }
 }
