@@ -1,3 +1,4 @@
+import { Favorite } from './modules/favorite/models/favorite.model';
 import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -57,7 +58,7 @@ import { join } from 'path';
         username: configService.get<string>('MYSQL_USERNAME'),
         password: configService.get<string>('MYSQL_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User, Token, Room, Media],
+        entities: [User, Token, Room, Media, Favorite],
         synchronize: true,
       }),
       inject: [ConfigService],

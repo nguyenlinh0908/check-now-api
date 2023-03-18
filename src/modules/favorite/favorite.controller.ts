@@ -28,7 +28,11 @@ export class FavoriteController {
   @Roles(Role.USER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
-  async create(@Body() createFavoriteDto: CreateFavoriteDto) {
+  async create(
+    @Body() createFavoriteDto: CreateFavoriteDto,
+    @CurrentUser() user: ICurrentUser,
+  ) {
+    createFavoriteDto.user = user.id;
     return await this.favoriteService.create(createFavoriteDto);
   }
 
