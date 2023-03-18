@@ -27,16 +27,13 @@ export class LocationService {
     return result;
   }
 
-  async getWard(provinceId, districtId) {
+  async getWard(districtId) {
     const result = await this.manager
       .createQueryBuilder()
       .select(['wad.*'])
       .from('ward', 'wad')
       .innerJoin('district', 'dis')
-      .innerJoin('province', 'pro')
-      .where('wad._province_id = :provinceId', { provinceId })
-      .andWhere('pro.id = :provinceId', { provinceId })
-      .andWhere('wad._district_id  = :districtId', { districtId })
+      .where('wad._district_id  = :districtId', { districtId })
       .andWhere('dis.id = :districtId', { districtId })
       .getRawMany();
     return result;

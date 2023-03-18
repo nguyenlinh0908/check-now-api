@@ -19,15 +19,10 @@ export class LocationController {
     return this.locationService.getDistrict(provinceId);
   }
 
-  @ApiQuery({ name: 'province', type: String })
   @ApiQuery({ name: 'district', type: String })
   @ApiOkResponse({ description: 'Ward list successfully.' })
   @Get('ward')
-  streets(
-    @Query('province')
-    provinceId,
-    @Query('district') districtId,
-  ) {
-    return this.locationService.getWard(provinceId, districtId);
+  streets(@Query('district') districtId) {
+    return this.locationService.getWard(districtId);
   }
 }
