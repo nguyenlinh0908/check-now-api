@@ -43,6 +43,15 @@ export class RoomController {
     return await this.roomService.find(options, filter, order);
   }
 
+  @ApiCreatedResponse({ description: 'room detail' })
+  @Get(':id')
+  async room(
+    @Query('id')
+    id: String,
+  ) {
+    return await this.roomService.findOne(id);
+  }
+
   @Roles(Role.HOST)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('host/list')

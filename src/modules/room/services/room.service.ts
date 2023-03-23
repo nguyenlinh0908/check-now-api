@@ -21,6 +21,14 @@ export class RoomService {
     return await this.roomRepository.insert(createRoomDto);
   }
 
+  async findOne(id: String) {
+    return await this.roomRepository.findOne({
+      where: {
+        id: Number(id),
+      },
+    });
+  }
+
   async find(
     options: IPaginationOptions,
     filter: any,
