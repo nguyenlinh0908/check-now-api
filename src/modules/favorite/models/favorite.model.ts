@@ -9,8 +9,8 @@ export class Favorite extends BaseModel {
   id: number;
 
   @ManyToOne(() => User, (user) => user.id)
-  user: string;
+  user: number;
 
   @ManyToOne(() => Room, (room) => room.id)
-  room: string;
+  room: number;
 }

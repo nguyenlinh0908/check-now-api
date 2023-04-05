@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { FilterFavoriteDto } from './dto/filter-favorite.dto';
+import { Room } from '../room/models';
 import { UpdateFavoriteDto } from './dto/update-favorite.dto';
 import { Favorite } from './models/favorite.model';
 
@@ -13,18 +12,32 @@ export class FavoriteService {
     @InjectRepository(Favorite)
     private favoriteRepository: Repository<Favorite>,
   ) {}
-  async create(createFavoriteDto: CreateFavoriteDto) {
-    return await this.favoriteRepository.insert(createFavoriteDto);
+  async create(updateFavorite: UpdateFavoriteDto) {
+    return await this.favoriteRepository.insert(updateFavorite);
   }
 
   async find(options, filter): Promise<Pagination<Favorite>> {
-    return await paginate<Favorite>(this.favoriteRepository, options, {
-      where: filter,
-    });
+    const queryBuilder = await this.favoriteRepository
+      .createQueryBuilder('favorite')
+      .leftJoinAndMapOne(
+        'favorite.room',
+        Room,
+        'room',
+        'favorite.roomId = room.Id',
+      )
+      .where(filter);
+
+    return await paginate<Favorite>(queryBuilder, options);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} favorite`;
+  async findOne(updateFavoriteDto: UpdateFavoriteDto): Promise<Favorite> {
+    return await this.favoriteRepository
+      .createQueryBuilder('favorite')
+      .innerJoin('favorite.user', 'user')
+      .innerJoin('favorite.room', 'room')
+      .where('user.id = :userId', { userId: updateFavoriteDto.user })
+      .andWhere('room.id = :roomId', { roomId: updateFavoriteDto.room })
+      .getOne();
   }
 
   update(id: number, updateFavoriteDto: UpdateFavoriteDto) {

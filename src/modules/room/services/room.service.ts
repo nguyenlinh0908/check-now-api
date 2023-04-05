@@ -1,3 +1,4 @@
+import { Favorite } from './../../favorite/models/favorite.model';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -41,6 +42,12 @@ export class RoomService {
         Media,
         'media',
         'room.id = media.roomId',
+      )
+      .leftJoinAndMapOne(
+        'room.favorite',
+        Favorite,
+        'favorite',
+        'room.id = favorite.roomId AND favorite.userId = 12',
       )
       .where(filter);
     return await paginate<Room>(queryBuilder, options);

@@ -1,10 +1,10 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateFavoriteDto {
   @IsOptional()
-  @IsString()
-  user?: string;
+  @IsNumber()
+  user?: number;
 
-  @IsString()
-  room: string;
+  @IsNumber()
+  room: number;
 }
