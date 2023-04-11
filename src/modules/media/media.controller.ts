@@ -89,8 +89,11 @@ export class MediaController {
       type: 'object',
       properties: {
         files: {
-          type: 'string[]',
-          format: 'binary',
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
         },
         user: {
           type: 'string',
@@ -129,11 +132,12 @@ export class MediaController {
         }`,
         type: file.mimetype,
         author: user.id,
-        user: body?.user,
-        room: body?.room,
+        user: body.user ? body.user : null,
+        room: body.room ? body.room : null,
         tag: body?.tag,
       };
     });
+    
     return await this.mediaService.createMany(createMultipleMediaDto);
   }
 

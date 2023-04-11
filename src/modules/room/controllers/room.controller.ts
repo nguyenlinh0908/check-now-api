@@ -1,5 +1,6 @@
 import { FilterRoomDto } from './../dto';
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { format } from 'date-fns';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -40,7 +41,17 @@ export class RoomController {
     const options = pick(filterRoom, ['limit', 'page']);
     const filter = pick(filterRoom, ['province']);
     const order = pick(filterRoom, ['order_by']);
-    return await this.roomService.find(options, filter, order);
+    const rooms = await this.roomService.find(options, filter, order);
+    const { items } = rooms;
+    return {
+      ...rooms,
+      items: items.map((room) => {
+        return {
+          ...room,
+          created_at: format(room.created_at, "dd-MM-yyyy HH:mm")
+        }
+      })
+    };
   }
 
   @ApiCreatedResponse({ description: 'room detail' })

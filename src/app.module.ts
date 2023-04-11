@@ -60,6 +60,7 @@ import { join } from 'path';
         database: configService.get<string>('DATABASE_NAME'),
         entities: [User, Token, Room, Media, Favorite],
         synchronize: true,
+        logging: true,
       }),
       inject: [ConfigService],
     }),

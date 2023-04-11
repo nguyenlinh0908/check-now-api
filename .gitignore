@@ -50,4 +50,4 @@ package-lock.json
 .eslintrc.js
 .prettierrc
 
-uploads
+upload
