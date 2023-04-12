@@ -38,4 +38,22 @@ export class LocationService {
       .getRawMany();
     return result;
   }
+
+  async getAllDistrict() {
+    const result = await this.manager
+      .createQueryBuilder()
+      .select(['dis.*'])
+      .from('district', 'dis')
+      .getRawMany();
+    return result;
+  }
+
+  async getAllWard() {
+    const result = await this.manager
+      .createQueryBuilder()
+      .select(['wad.*'])
+      .from('ward', 'wad')
+      .getRawMany();
+    return result;
+  }
 }

@@ -5,9 +5,11 @@ import { LocationService } from '../services';
 @ApiTags('Location')
 @Controller('location')
 export class LocationController {
+  
   constructor(private locationService: LocationService) {}
+
   @ApiOkResponse({ description: 'province list successfully' })
-  @Get('province')
+  @Get('provinces')
   provinces() {
     return this.locationService.getProvinces();
   }
@@ -24,5 +26,15 @@ export class LocationController {
   @Get('ward')
   streets(@Query('district') districtId) {
     return this.locationService.getWard(districtId);
+  }
+
+  @Get('districts')
+  getAllDistrict() {
+    return this.locationService.getAllDistrict();
+  }
+
+  @Get('wards')
+  getAllWards() {
+    return this.locationService.getAllWard();
   }
 }
