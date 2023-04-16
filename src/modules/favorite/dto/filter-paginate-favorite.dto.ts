@@ -1,4 +1,10 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { UpdateFavoriteDto } from './update-favorite.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { Min } from 'class-validator';
 
-export class FilterPaginateFavoriteDto extends PartialType(UpdateFavoriteDto) {}
+export class FilterPaginateFavoriteDto {
+  limit?: number = 100;
+
+  page?: number = 1;
+
+  user?: number;
+}

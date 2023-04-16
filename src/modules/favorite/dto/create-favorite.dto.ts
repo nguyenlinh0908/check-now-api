@@ -6,5 +6,5 @@ export class CreateFavoriteDto {
   user?: number;
 
   @IsNumber()
-  room: number;
+  room?: number;
 }

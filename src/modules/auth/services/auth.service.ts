@@ -1,5 +1,10 @@
 import { UserLogoutDto } from './../dto/user-logout.dto';
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
@@ -19,9 +24,8 @@ export class AuthService {
     @InjectRepository(Token) private tokenRepository: Repository<Token>,
     private configService: ConfigService,
     private readonly userService: UserService,
-    private readonly jwtService: JwtService,
-  ) // private readonly redisService: RedisService,
-  {
+    private readonly jwtService: JwtService, // private readonly redisService: RedisService,
+  ) {
     // this.redis = this.redisService.getClient();
   }
 
@@ -31,15 +35,19 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error(
+      throw new HttpException(
         `Don't exist user with username: ${userLoginDto.username}`,
+        HttpStatus.UNAUTHORIZED,
       );
     }
 
     const isMatch = this.comparePassword(userLoginDto.password, user.password);
 
     if (!isMatch) {
-      throw new Error('password is not compare');
+      throw new HttpException(
+        'password is not compare',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     const loginTokens = await this.genTokenJwt(user);
