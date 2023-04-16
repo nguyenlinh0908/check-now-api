@@ -31,10 +31,9 @@ export class RoomService {
   }
 
   async find(
-    options: IPaginationOptions,
     filter: any,
     orderBy: any,
-  ): Promise<Pagination<Room>> {
+  ) {
     const queryBuilder = await this.roomRepository
       .createQueryBuilder('room')
       .leftJoinAndMapOne(
@@ -49,8 +48,11 @@ export class RoomService {
         'favorite',
         'room.id = favorite.roomId AND favorite.userId = 12',
       )
-      .where(filter);
-    return await paginate<Room>(queryBuilder, options);
+      .where(filter)
+      .orderBy('room.created_at', 'DESC')
+      .getMany();
+
+    return queryBuilder;
   }
 
   async findAll() {

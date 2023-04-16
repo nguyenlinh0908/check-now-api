@@ -38,20 +38,16 @@ export class RoomController {
   @ApiOkResponse({ description: 'rooms list' })
   @Get('list')
   async rooms(@Query() filterRoom: FilterRoomDto) {
-    const options = pick(filterRoom, ['limit', 'page']);
-    const filter = pick(filterRoom, ['province']);
+    const filter = pick(filterRoom, ['province', 'district', 'ward', 'type']);
     const order = pick(filterRoom, ['order_by']);
-    const rooms = await this.roomService.find(options, filter, order);
-    const { items } = rooms;
-    return {
-      ...rooms,
-      items: items.map((room) => {
-        return {
-          ...room,
-          created_at: format(room.created_at, "dd-MM-yyyy HH:mm")
-        }
-      })
-    };
+    const rooms = await this.roomService.find( filter, order);
+    const formattedRooms = rooms.map((room) => {
+      return {
+        ...room,
+        created_at: format(room.created_at, "dd-MM-yyyy HH:mm")
+      }
+    })
+    return formattedRooms;
   }
 
   @ApiCreatedResponse({ description: 'room detail' })
@@ -73,11 +69,10 @@ export class RoomController {
     //get rooms by host
     filterRoom.user = user.id;
 
-    const options = pick(filterRoom, ['limit', 'page']);
     const filter = pick(filterRoom, ['province', 'user']);
     const order = pick(filterRoom, ['order_by']);
 
-    return await this.roomService.find(options, filter, order);
+    return await this.roomService.find(filter, order);
   }
 
   @ApiOkResponse({ description: 'get all rooms' })
