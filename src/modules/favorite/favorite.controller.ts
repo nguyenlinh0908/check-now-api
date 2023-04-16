@@ -44,7 +44,7 @@ export class FavoriteController {
 
   @Roles(Role.USER)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Get()
+  @Get('list')
   async find(
     @Query() filterFavoriteDto: FilterPaginateFavoriteDto,
     @CurrentUser() user: ICurrentUser,
