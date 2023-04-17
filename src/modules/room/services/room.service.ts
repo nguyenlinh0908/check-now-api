@@ -19,7 +19,7 @@ export class RoomService {
   ) {}
 
   async create(createRoomDto: CreateRoomDto) {
-    return await this.roomRepository.insert(createRoomDto);
+    return (await this.roomRepository.insert(createRoomDto)).generatedMaps[0];
   }
 
   async findOne(id: String) {

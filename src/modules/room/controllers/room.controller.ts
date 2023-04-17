@@ -14,11 +14,12 @@ import { ICurrentUser } from 'src/modules/auth/interfaces';
 import { CreateRoomDto } from '../dto';
 import { RoomService } from '../services';
 import { pick } from 'lodash';
+import { LocationService } from 'src/modules/location/services';
 
 @ApiTags('Room')
 @Controller('room')
 export class RoomController {
-  constructor(private roomService: RoomService) {}
+  constructor(private roomService: RoomService, private localtionService: LocationService) {}
 
   @Roles(Role.HOST)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -32,7 +33,11 @@ export class RoomController {
     if (user.id) {
       body.user = user.id;
     }
-    return await this.roomService.create(body);
+    const room = await this.roomService.create(body);
+    
+    return {
+      id: room.id,
+    };
   }
 
   @ApiOkResponse({ description: 'rooms list' })
@@ -41,9 +46,19 @@ export class RoomController {
     const filter = pick(filterRoom, ['province', 'district', 'ward', 'type']);
     const order = pick(filterRoom, ['order_by']);
     const rooms = await this.roomService.find( filter, order);
+    const provinces = await this.localtionService.getProvinces();
+    const districts = await this.localtionService.getAllDistrict();
+    const wards = await this.localtionService.getAllWard();
+    
     const formattedRooms = rooms.map((room) => {
+      const province = provinces.filter((province) => province.id === room.province)[0];
+      const district = districts.filter((district) => district.id === room.district)[0];
+      const ward = wards.filter((ward) => ward.id === room.ward)[0];
       return {
         ...room,
+        provinceName: province._name,
+        districtName: district._name,
+        wardName: ward._name,
         created_at: format(room.created_at, "dd-MM-yyyy HH:mm")
       }
     })

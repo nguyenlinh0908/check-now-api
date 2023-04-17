@@ -124,6 +124,8 @@ export class MediaController {
     @CurrentUser() user: ICurrentUser,
   ) {
     let createMultipleMediaDto: CreateMediaDto[];
+    console.log(body.room);
+    
     createMultipleMediaDto = _.map(files, (file) => {
       return {
         title: file.filename,
@@ -134,11 +136,17 @@ export class MediaController {
         author: user.id,
         user: body.user ? body.user : null,
         room: body.room ? body.room : null,
-        tag: body?.tag,
+        // tag: body?.tag,
+        tag: 'content',
       };
     });
+
+    const uploadFile = await this.mediaService.createMany(createMultipleMediaDto);
     
-    return await this.mediaService.createMany(createMultipleMediaDto);
+    if (uploadFile) {
+      return { message: 'Upload successfully' };
+    }
+    return { message: 'Upload failed' };
   }
 
   @Get()
