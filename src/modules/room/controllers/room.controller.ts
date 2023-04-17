@@ -14,6 +14,7 @@ import { ICurrentUser } from 'src/modules/auth/interfaces';
 import { CreateRoomDto } from '../dto';
 import { RoomService } from '../services';
 import { pick } from 'lodash';
+import { Room } from '../models';
 
 @ApiTags('Room')
 @Controller('room')
@@ -30,7 +31,7 @@ export class RoomController {
     @CurrentUser() user: ICurrentUser,
   ) {
     if (user.id) {
-      body.user = user.id;
+      body.user = Number(user.id);
     }
     return await this.roomService.create(body);
   }
@@ -40,13 +41,13 @@ export class RoomController {
   async rooms(@Query() filterRoom: FilterRoomDto) {
     const filter = pick(filterRoom, ['province', 'district', 'ward', 'type']);
     const order = pick(filterRoom, ['order_by']);
-    const rooms = await this.roomService.find( filter, order);
+    const rooms = await this.roomService.find(filter, order);
     const formattedRooms = rooms.map((room) => {
       return {
         ...room,
-        created_at: format(room.created_at, "dd-MM-yyyy HH:mm")
-      }
-    })
+        created_at: format(room.created_at, 'dd-MM-yyyy HH:mm'),
+      };
+    });
     return formattedRooms;
   }
 
@@ -79,5 +80,11 @@ export class RoomController {
   @Get('list/all')
   async allRooms() {
     return await this.roomService.findAll();
+  }
+
+  @ApiOkResponse({ description: 'get detail room' })
+  @Get('detail')
+  async detail(@Query('id') id: number): Promise<Room> {
+    return await this.roomService.findById(id);
   }
 }

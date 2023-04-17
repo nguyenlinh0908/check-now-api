@@ -1,8 +1,15 @@
 import { dateToTimestamp, timeStampToDate } from 'src/helpers';
 import { User } from 'src/modules/user/models';
 import { BaseModel } from 'src/utils';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { RoomType } from '../enums';
+import { District, Province, Ward } from 'src/modules/location/models';
 
 @Entity()
 export class Room extends BaseModel {
@@ -19,14 +26,23 @@ export class Room extends BaseModel {
   })
   description: string;
 
-  @Column()
-  province: number;
+  @ManyToOne(() => Province, (province) => province.id, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'province' })
+  province: Province | number;
 
-  @Column()
-  district: number;
+  @ManyToOne(() => District, (district) => district.id, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'district' })
+  district: District | number;
 
-  @Column()
-  ward: number;
+  @ManyToOne(() => Ward, (ward) => ward.id, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'ward' })
+  ward: Ward | number;
 
   @Column({
     type: String,
@@ -70,6 +86,7 @@ export class Room extends BaseModel {
   })
   expired: Date;
 
-  @ManyToOne(() => User, (user) => user.id)
-  user: string;
+  @ManyToOne(() => User, (user) => user.id, { eager: true })
+  @JoinColumn({ name: 'user' })
+  user: User | number;
 }

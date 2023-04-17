@@ -75,7 +75,7 @@ export class MediaController {
     return await this.mediaService.create({
       title: file.filename,
       type: file.mimetype,
-      author: user.id,
+      author: Number(user.id),
       url: `${this.configService.get<string>('MULTER_DEST')}/${file.filename}`,
       tag: body?.tag,
     });
@@ -137,7 +137,7 @@ export class MediaController {
         tag: body?.tag,
       };
     });
-    
+
     return await this.mediaService.createMany(createMultipleMediaDto);
   }
 

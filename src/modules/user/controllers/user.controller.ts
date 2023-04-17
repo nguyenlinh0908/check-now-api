@@ -1,12 +1,13 @@
 import { FilterUserDto } from './../dto';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
-import { Roles } from 'src/modules/auth/decorators';
+import { CurrentUser, Roles } from 'src/modules/auth/decorators';
 import { Role } from 'src/modules/auth/enums';
 import { JwtAuthGuard, RolesGuard } from 'src/modules/auth/guards';
 import { UserService } from '../services';
 import { pick } from 'lodash';
 import { pickRegex } from 'src/helpers';
+import { ICurrentUser } from 'src/modules/auth/interfaces';
 
 @ApiTags('User')
 @Controller('user')
@@ -32,5 +33,14 @@ export class UserController {
     const filter = pickRegex(filterUser, ['username']);
     const orderBy = pick(filterUser, ['order_by']);
     return await this.userService.find(options, filter, orderBy);
+  }
+
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'profile' })
+  @Roles(Role.ADMIN, Role.HOST, Role.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('profile')
+  async profile(@CurrentUser() user: ICurrentUser) {
+    return await this.userService.findById(Number(user.id));
   }
 }

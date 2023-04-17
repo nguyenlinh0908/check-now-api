@@ -30,10 +30,7 @@ export class RoomService {
     });
   }
 
-  async find(
-    filter: any,
-    orderBy: any,
-  ) {
+  async find(filter: any, orderBy: any) {
     const queryBuilder = await this.roomRepository
       .createQueryBuilder('room')
       .leftJoinAndMapOne(
@@ -66,5 +63,9 @@ export class RoomService {
       )
       .getMany();
     return queryBuilder;
+  }
+
+  async findById(id: number): Promise<Room> {
+    return await this.roomRepository.findOne({ where: { id: id } });
   }
 }

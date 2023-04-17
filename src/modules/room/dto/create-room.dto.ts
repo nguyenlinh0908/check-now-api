@@ -32,5 +32,5 @@ export class CreateRoomDto {
   @ApiProperty({ type: Number })
   expired: number | Date;
 
-  user: string;
+  user: number;
 }
