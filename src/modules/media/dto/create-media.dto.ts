@@ -8,11 +8,11 @@ export class CreateMediaDto {
 
   type: string;
 
-  user?: string;
+  user?: number;
 
-  room?: string;
+  room?: number;
 
   tag: MediaTag;
 
-  author: string;
+  author: number;
 }

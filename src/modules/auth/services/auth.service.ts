@@ -55,6 +55,8 @@ export class AuthService {
     delete user?.password;
     return {
       ...loginTokens,
+      fullName: user['fullName'],
+      role: user['role'],
       user: user,
     };
   }

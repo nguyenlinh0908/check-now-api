@@ -30,10 +30,7 @@ export class RoomService {
     });
   }
 
-  async find(
-    filter: any,
-    orderBy: any,
-  ) {
+  async find(filter: any, orderBy: any) {
     const queryBuilder = await this.roomRepository
       .createQueryBuilder('room')
       .leftJoinAndMapOne(
@@ -47,6 +44,18 @@ export class RoomService {
         Favorite,
         'favorite',
         'room.id = favorite.roomId AND favorite.userId = 12',
+      )
+      .innerJoinAndSelect(
+        'room.province', 
+        'province', 
+      )
+      .innerJoinAndSelect(
+        'room.district', 
+        'district', 
+      )
+      .innerJoinAndSelect(
+        'room.ward', 
+        'ward', 
       )
       .where(filter)
       .orderBy('room.created_at', 'DESC')
@@ -66,5 +75,9 @@ export class RoomService {
       )
       .getMany();
     return queryBuilder;
+  }
+
+  async findById(id: number): Promise<Room> {
+    return await this.roomRepository.findOne({ where: { id: id } });
   }
 }

@@ -10,4 +10,7 @@ export class FilterUserDto implements IPaginationOptions {
 
   @ApiProperty({ type: String, default: 'username', required: false })
   username?: string;
+
+  @ApiProperty({ type: Number, required: false })
+  id?: number;
 }

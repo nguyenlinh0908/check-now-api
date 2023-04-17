@@ -75,7 +75,7 @@ export class MediaController {
     return await this.mediaService.create({
       title: file.filename,
       type: file.mimetype,
-      author: user.id,
+      author: Number(user.id),
       url: `${this.configService.get<string>('MULTER_DEST')}/${file.filename}`,
       tag: body?.tag,
     });
@@ -124,7 +124,6 @@ export class MediaController {
     @CurrentUser() user: ICurrentUser,
   ) {
     let createMultipleMediaDto: CreateMediaDto[];
-    console.log(body.room);
     
     createMultipleMediaDto = _.map(files, (file) => {
       return {
@@ -136,8 +135,7 @@ export class MediaController {
         author: user.id,
         user: body.user ? body.user : null,
         room: body.room ? body.room : null,
-        // tag: body?.tag,
-        tag: 'content',
+        tag: body?.tag,
       };
     });
 
