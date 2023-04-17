@@ -23,6 +23,7 @@ import {
   ServeStaticModuleOptions,
 } from '@nestjs/serve-static';
 import { join } from 'path';
+import { District, Province, Street, Ward } from './modules/location/models';
 
 @Module({
   imports: [
@@ -58,7 +59,17 @@ import { join } from 'path';
         username: configService.get<string>('MYSQL_USERNAME'),
         password: configService.get<string>('MYSQL_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User, Token, Room, Media, Favorite],
+        entities: [
+          User,
+          Token,
+          Room,
+          Media,
+          Favorite,
+          Province,
+          District,
+          Street,
+          Ward,
+        ],
         synchronize: true,
         logging: true,
       }),
