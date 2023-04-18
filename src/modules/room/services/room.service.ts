@@ -23,11 +23,25 @@ export class RoomService {
   }
 
   async findOne(id: String) {
-    return await this.roomRepository.findOne({
-      where: {
-        id: Number(id),
-      },
-    });
+    return await this.roomRepository
+      .createQueryBuilder('room')
+      .leftJoinAndMapOne(
+        'room.avatar',
+        Media,
+        'media',
+        'room.id = media.roomId',
+      )
+      .leftJoinAndMapOne(
+        'room.favorite',
+        Favorite,
+        'favorite',
+        'room.id = favorite.roomId AND favorite.userId = 12',
+      )
+      .innerJoinAndSelect('room.province', 'province')
+      .innerJoinAndSelect('room.district', 'district')
+      .innerJoinAndSelect('room.ward', 'ward')
+      .where({ id: id })
+      .getOne();
   }
 
   async find(filter: any, orderBy: any) {
@@ -45,18 +59,9 @@ export class RoomService {
         'favorite',
         'room.id = favorite.roomId AND favorite.userId = 12',
       )
-      .innerJoinAndSelect(
-        'room.province', 
-        'province', 
-      )
-      .innerJoinAndSelect(
-        'room.district', 
-        'district', 
-      )
-      .innerJoinAndSelect(
-        'room.ward', 
-        'ward', 
-      )
+      .innerJoinAndSelect('room.province', 'province')
+      .innerJoinAndSelect('room.district', 'district')
+      .innerJoinAndSelect('room.ward', 'ward')
       .where(filter)
       .orderBy('room.created_at', 'DESC')
       .getMany();
