@@ -1,17 +1,5 @@
 import { FilterRoomDto } from './../dto';
-<<<<<<< HEAD
 import { Body, Controller, Delete, Get, Post, Query, UseGuards, Param } from '@nestjs/common';
-=======
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
->>>>>>> a42f720085d2f06fda407420c7b5b5fcafd6827f
 import { format } from 'date-fns';
 import {
   ApiBearerAuth,
