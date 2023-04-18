@@ -80,4 +80,33 @@ export class RoomService {
   async findById(id: number): Promise<Room> {
     return await this.roomRepository.findOne({ where: { id: id } });
   }
+
+  async delete(id: String) {
+    await this.deleteFavorite(id)
+    await this.deleteMedia(id)
+    return await this.roomRepository
+    .createQueryBuilder('room')
+    .delete()
+    .from(Room)
+    .where("id = :id", { id: Number(id) })
+    .execute()
+  }
+
+  async deleteFavorite(id: String) {
+    return await this.roomRepository
+    .createQueryBuilder('favorite')
+    .delete()
+    .from(Favorite)
+    .where("roomId = :id", { id: Number(id) })
+    .execute()
+  }
+
+  async deleteMedia(id: String) {
+    return await this.roomRepository
+    .createQueryBuilder('media')
+    .delete()
+    .from(Media)
+    .where("roomId = :id", { id: Number(id) })
+    .execute()
+  }
 }

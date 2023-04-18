@@ -1,5 +1,5 @@
 import { FilterRoomDto } from './../dto';
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query, UseGuards, Param } from '@nestjs/common';
 import { format } from 'date-fns';
 import {
   ApiBearerAuth,
@@ -76,6 +76,7 @@ export class RoomController {
     return await this.roomService.findOne(id);
   }
 
+  @ApiBearerAuth()
   @Roles(Role.HOST)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('host/list')
@@ -88,8 +89,26 @@ export class RoomController {
 
     const filter = pick(filterRoom, ['province', 'user']);
     const order = pick(filterRoom, ['order_by']);
+    const rooms = await this.roomService.find( filter, order);
 
-    return await this.roomService.find(filter, order);
+    const formattedRooms = rooms.map((room) => {
+      return {
+        id: room.id,
+        name: room.name,
+        description: room.description,
+        micro_address: room.micro_address,
+        type: room.type,
+        star: room.star,
+        price: room.price,
+        acreage: room.acreage,
+        expired: room.expired,
+        avatar: room['avatar'],
+        favorite: room['favorite'],
+        address: `${room.ward['_name']}, ${room.district['_name']}, ${room.province['_name']}`,
+        created_at: format(room.created_at, "dd-MM-yyyy HH:mm")
+      }
+    })
+    return formattedRooms;
   }
 
   @ApiOkResponse({ description: 'get all rooms' })
@@ -102,5 +121,22 @@ export class RoomController {
   @Get('detail')
   async detail(@Query('id') id: number): Promise<Room> {
     return await this.roomService.findById(id);
+  }
+
+  @ApiBearerAuth()
+  @Roles(Role.HOST)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    const deleteRoom = await this.roomService.delete(id);
+
+    if (deleteRoom) {
+      return {
+        message: 'Deleted'
+      }
+    }
+    return {
+      message: 'failed'
+    } 
   }
 }
