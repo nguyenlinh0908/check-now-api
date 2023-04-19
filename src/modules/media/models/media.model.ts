@@ -27,6 +27,7 @@ export class Media extends BaseModel {
   @Column({
     type: 'enum',
     enum: MediaTag,
+    default: MediaTag.AVATAR,
   })
   tag: MediaTag;
 

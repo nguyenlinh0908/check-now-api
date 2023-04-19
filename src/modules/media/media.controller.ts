@@ -77,7 +77,7 @@ export class MediaController {
       type: file.mimetype,
       author: Number(user.id),
       url: `${this.configService.get<string>('MULTER_DEST')}/${file.filename}`,
-      tag: body?.tag,
+      // tag: body?.tag,
     });
   }
 
@@ -119,12 +119,12 @@ export class MediaController {
     body: {
       user: string;
       room: string;
-      tag: MediaTag;
+      // tag: MediaTag;
     },
     @CurrentUser() user: ICurrentUser,
   ) {
     let createMultipleMediaDto: CreateMediaDto[];
-    
+
     createMultipleMediaDto = _.map(files, (file) => {
       return {
         title: file.filename,
@@ -135,12 +135,14 @@ export class MediaController {
         author: user.id,
         user: body.user ? body.user : null,
         room: body.room ? body.room : null,
-        tag: body?.tag,
+        // tag: body?.tag,
       };
     });
 
-    const uploadFile = await this.mediaService.createMany(createMultipleMediaDto);
-    
+    const uploadFile = await this.mediaService.createMany(
+      createMultipleMediaDto,
+    );
+
     if (uploadFile) {
       return { message: 'Upload successfully' };
     }

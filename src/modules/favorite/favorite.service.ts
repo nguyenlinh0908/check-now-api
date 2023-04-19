@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Room } from '../room/models';
 import { UpdateFavoriteDto } from './dto/update-favorite.dto';
 import { Favorite } from './models/favorite.model';
+import { Media } from '../media/models/media.model';
 
 @Injectable()
 export class FavoriteService {
@@ -24,6 +25,12 @@ export class FavoriteService {
         Room,
         'room',
         'favorite.roomId = room.Id',
+      )
+      .leftJoinAndMapOne(
+        'room.avatar',
+        Media,
+        'media',
+        'room.id = media.roomId',
       )
       .where(filter);
 
