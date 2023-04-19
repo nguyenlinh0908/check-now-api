@@ -37,6 +37,7 @@ export class RoomService {
         'favorite',
         'room.id = favorite.roomId AND favorite.userId = 12',
       )
+      .leftJoinAndMapOne('room.user', User, 'user', 'room.user = user.id')
       .innerJoinAndSelect('room.province', 'province')
       .innerJoinAndSelect('room.district', 'district')
       .innerJoinAndSelect('room.ward', 'ward')
