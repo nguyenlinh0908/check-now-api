@@ -119,11 +119,12 @@ export class MediaController {
     body: {
       user: string;
       room: string;
-      // tag: MediaTag;
+      tag: MediaTag;
     },
     @CurrentUser() user: ICurrentUser,
   ) {
     let createMultipleMediaDto: CreateMediaDto[];
+    console.log(body.tag)
 
     createMultipleMediaDto = _.map(files, (file) => {
       return {
@@ -135,7 +136,7 @@ export class MediaController {
         author: user.id,
         user: body.user ? body.user : null,
         room: body.room ? body.room : null,
-        // tag: body?.tag,
+        tag: body?.tag,
       };
     });
 

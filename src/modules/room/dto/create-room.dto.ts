@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { RoomType } from '../enums';
+import { RoomStatus, RoomType } from '../enums';
 
 export class CreateRoomDto {
   @ApiProperty({ type: String, default: 'Phòng trọ 2n1k số 2 Đinh Liệt' })
@@ -28,6 +28,10 @@ export class CreateRoomDto {
 
   @ApiProperty({ type: String, default: 42, minimum: 1 })
   acreage: number;
+
+  @ApiProperty({ type: 'enum', default: RoomStatus.OPEN })
+  status: RoomStatus;
+
 
   @ApiProperty({ type: Number })
   expired: number | Date;

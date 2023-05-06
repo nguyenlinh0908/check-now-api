@@ -8,7 +8,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { RoomType } from '../enums';
+import { RoomType, RoomStatus } from '../enums';
 import { District, Province, Ward } from 'src/modules/location/models';
 
 @Entity()
@@ -70,6 +70,13 @@ export class Room extends BaseModel {
     type: Number,
   })
   acreage: number;
+
+  @Column({
+    type: 'enum',
+    enum: RoomStatus,
+    default: RoomStatus.OPEN
+  })
+  status: RoomStatus;
 
   @Column({
     transformer: {

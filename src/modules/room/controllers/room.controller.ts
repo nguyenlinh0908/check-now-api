@@ -57,6 +57,7 @@ export class RoomController {
         star: room.star,
         price: room.price,
         acreage: room.acreage,
+        status: room.status,
         expired: room.expired,
         avatar: room['avatar'],
         favorite: room['favorite'],
