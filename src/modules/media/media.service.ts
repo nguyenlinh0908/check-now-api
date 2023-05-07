@@ -24,8 +24,10 @@ export class MediaService {
       .execute();
   }
 
-  findAll() {
-    return `This action returns all media`;
+  async findAll(roomId: String) {
+    const queryBuilder = await this.mediaRepository
+      .createQueryBuilder('media').where({tag: "content"}).where("media.roomId = :roomId",{roomId}).getMany();
+    return queryBuilder
   }
 
   async findOne(id: number): Promise<Media> {

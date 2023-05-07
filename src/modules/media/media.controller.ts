@@ -124,7 +124,6 @@ export class MediaController {
     @CurrentUser() user: ICurrentUser,
   ) {
     let createMultipleMediaDto: CreateMediaDto[];
-    console.log(body.tag)
 
     createMultipleMediaDto = _.map(files, (file) => {
       return {
@@ -136,7 +135,7 @@ export class MediaController {
         author: user.id,
         user: body.user ? body.user : null,
         room: body.room ? body.room : null,
-        tag: body?.tag,
+        tag: body?.tag.replace(/"/g, ''),
       };
     });
 
@@ -148,11 +147,6 @@ export class MediaController {
       return { message: 'Upload successfully' };
     }
     return { message: 'Upload failed' };
-  }
-
-  @Get()
-  findAll() {
-    return this.mediaService.findAll();
   }
 
   @Get(':id')

@@ -77,5 +77,6 @@ import { Media } from './models/media.model';
   ],
   controllers: [MediaController],
   providers: [MediaService],
+  exports: [MediaService]
 })
 export class MediaModule {}

@@ -16,10 +16,12 @@ import { RoomService } from '../services';
 import { pick } from 'lodash';
 import { Room } from '../models';
 
+import { MediaService } from 'src/modules/media/media.service';
+
 @ApiTags('Room')
 @Controller('room')
 export class RoomController {
-  constructor(private roomService: RoomService) {}
+  constructor(private roomService: RoomService, private mediaService: MediaService) {}
 
   @Roles(Role.HOST)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -74,7 +76,14 @@ export class RoomController {
     @Param('id')
     id: String,
   ) {
-    return await this.roomService.findOne(id);
+    const medias = await this.mediaService.findAll(id);
+    const roomFound =  await this.roomService.findOne(id);
+    return {
+      ...roomFound, 
+      address: `${roomFound.ward['_name']}, ${roomFound.district['_name']}, ${roomFound.province['_name']}`,
+      created_at: format(roomFound.created_at, 'dd-MM-yyyy HH:mm'),
+      medias 
+    }
   }
 
   @ApiBearerAuth()
