@@ -77,7 +77,7 @@ export class MediaController {
       type: file.mimetype,
       author: Number(user.id),
       url: `${this.configService.get<string>('MULTER_DEST')}/${file.filename}`,
-      // tag: body?.tag,
+      tag: body?.tag,
     });
   }
 

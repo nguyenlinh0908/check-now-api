@@ -12,7 +12,7 @@ export class CreateMediaDto {
 
   room?: number;
 
-  // tag: MediaTag;
+  tag: MediaTag;
 
   author: number;
 }

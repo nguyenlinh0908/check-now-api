@@ -1,5 +1,14 @@
 import { FilterRoomDto } from './../dto';
-import { Body, Controller, Delete, Get, Post, Query, UseGuards, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+  Param,
+} from '@nestjs/common';
 import { format } from 'date-fns';
 import {
   ApiBearerAuth,
@@ -99,7 +108,7 @@ export class RoomController {
 
     const filter = pick(filterRoom, ['province', 'user']);
     const order = pick(filterRoom, ['order_by']);
-    const rooms = await this.roomService.find( filter, order);
+    const rooms = await this.roomService.find(filter, order);
 
     const formattedRooms = rooms.map((room) => {
       return {
@@ -115,9 +124,9 @@ export class RoomController {
         avatar: room['avatar'],
         favorite: room['favorite'],
         address: `${room.ward['_name']}, ${room.district['_name']}, ${room.province['_name']}`,
-        created_at: format(room.created_at, "dd-MM-yyyy HH:mm")
-      }
-    })
+        created_at: format(room.created_at, 'dd-MM-yyyy HH:mm'),
+      };
+    });
     return formattedRooms;
   }
 
@@ -142,11 +151,11 @@ export class RoomController {
 
     if (deleteRoom) {
       return {
-        message: 'Deleted'
-      }
+        message: 'Deleted',
+      };
     }
     return {
-      message: 'failed'
-    } 
+      message: 'failed',
+    };
   }
 }
