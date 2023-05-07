@@ -11,6 +11,7 @@ import { User } from 'src/modules/user/models';
 import { Repository } from 'typeorm';
 import { CreateRoomDto, FilterRoomDto } from '../dto';
 import { Room } from '../models';
+import { UpdateRoomDto } from '../dto/update-room.dto';
 
 @Injectable()
 export class RoomService {
@@ -20,6 +21,10 @@ export class RoomService {
 
   async create(createRoomDto: CreateRoomDto) {
     return (await this.roomRepository.insert(createRoomDto)).generatedMaps[0];
+  }
+
+  async update(roomId: number, updateRoomDto: UpdateRoomDto) {
+    return await this.roomRepository.update({ id: roomId }, updateRoomDto);
   }
 
   async findOne(id: String) {

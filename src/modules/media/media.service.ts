@@ -26,8 +26,11 @@ export class MediaService {
 
   async findAll(roomId: String) {
     const queryBuilder = await this.mediaRepository
-      .createQueryBuilder('media').where({tag: "content"}).where("media.roomId = :roomId",{roomId}).getMany();
-    return queryBuilder
+      .createQueryBuilder('media')
+      .where({ tag: 'content' })
+      .where('media.roomId = :roomId', { roomId })
+      .getMany();
+    return queryBuilder;
   }
 
   async findOne(id: number): Promise<Media> {
@@ -36,6 +39,10 @@ export class MediaService {
         id: id,
       },
     });
+  }
+
+  async deleteByRoomId(roomID: number) {
+    return await this.mediaRepository.delete({ room: roomID });
   }
 
   update(id: number, updateMediaDto: UpdateMediaDto) {

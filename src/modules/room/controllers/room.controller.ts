@@ -8,6 +8,9 @@ import {
   Query,
   UseGuards,
   Param,
+  Patch,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { format } from 'date-fns';
 import {
@@ -26,11 +29,15 @@ import { pick } from 'lodash';
 import { Room } from '../models';
 
 import { MediaService } from 'src/modules/media/media.service';
+import { UpdateRoomDto } from '../dto/update-room.dto';
 
 @ApiTags('Room')
 @Controller('room')
 export class RoomController {
-  constructor(private roomService: RoomService, private mediaService: MediaService) {}
+  constructor(
+    private roomService: RoomService,
+    private mediaService: MediaService,
+  ) {}
 
   @Roles(Role.HOST)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -49,6 +56,21 @@ export class RoomController {
     return {
       id: room.id,
     };
+  }
+
+  @Roles(Role.HOST)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @ApiCreatedResponse({ description: 'update room successfully' })
+  @Patch(':id')
+  async updateRoom(@Param('id') roomID: number, @Body() body: UpdateRoomDto) {
+    const updated = await this.roomService.update(roomID, body);
+    if (updated?.affected == 1) {
+      const roomUpdated = await this.roomService.findOne(String(roomID));
+      await this.mediaService.deleteByRoomId(roomUpdated.id);
+      return roomUpdated;
+    }
+    throw new HttpException('update room fail', HttpStatus.BAD_REQUEST);
   }
 
   @ApiOkResponse({ description: 'rooms list' })
@@ -86,13 +108,13 @@ export class RoomController {
     id: String,
   ) {
     const medias = await this.mediaService.findAll(id);
-    const roomFound =  await this.roomService.findOne(id);
+    const roomFound = await this.roomService.findOne(id);
     return {
-      ...roomFound, 
+      ...roomFound,
       address: `${roomFound.ward['_name']}, ${roomFound.district['_name']}, ${roomFound.province['_name']}`,
       created_at: format(roomFound.created_at, 'dd-MM-yyyy HH:mm'),
-      medias 
-    }
+      medias,
+    };
   }
 
   @ApiBearerAuth()
